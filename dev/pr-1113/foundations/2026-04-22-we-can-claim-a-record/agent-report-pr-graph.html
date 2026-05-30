@@ -8,7 +8,7 @@
 
 <meta name="author" content="vade-coo">
 <meta name="dcterms.date" content="2026-04-22">
-<meta name="description" content="*proj: labeled issues spanning 4+ weeks: - proj:coo-identity (#27, coo-memory) spans from 2026-04-21 to open, with 10 sub-steps including “Ven: Mint fine-grained PAT” (step 5) and “COO: cut .mcp.json over to new PAT” (step 8). Authored with explicit multi-actor sequencing (“Next…">
+<meta name="description" content="*proj: labeled issues spanning 4+ weeks: - proj:coo-identity (#27, vade-coo-memory) spans from 2026-04-21 to open, with 10 sub-steps including “Ven: Mint fine-grained PAT” (step 5) and “COO: cut .mcp.json over to new PAT” (step 8). Authored with explicit multi-actor sequencing (…">
 
 <title>Supplementary: Agent B report — PR/issue graph and coordination – VADE substrate</title>
 <style>
@@ -77,7 +77,7 @@ ul.task-list li input[type="checkbox"] {
 
 <link rel="stylesheet" href="../../quarto-overrides.css">
 <meta property="og:title" content="Supplementary: Agent B report — PR/issue graph and coordination – VADE substrate">
-<meta property="og:description" content="*proj: labeled issues spanning 4+ weeks: - proj:coo-identity (#27, coo-memory) spans from 2026-04-21 to open, with 10 sub-steps including “Ven: Mint fine-grained PAT” (step 5) and “COO: cut .mcp.json over to new PAT” (step 8). Authored with explicit multi-actor sequencing (“Next…">
+<meta property="og:description" content="*proj: labeled issues spanning 4+ weeks: - proj:coo-identity (#27, vade-coo-memory) spans from 2026-04-21 to open, with 10 sub-steps including “Ven: Mint fine-grained PAT” (step 5) and “COO: cut .mcp.json over to new PAT” (step 8). Authored with explicit multi-actor sequencing (…">
 <meta property="og:site_name" content="VADE substrate">
 </head>
 
@@ -382,7 +382,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#report-coordinated-behavior-in-coo-labs-organization-evidence-summary" id="toc-report-coordinated-behavior-in-coo-labs-organization-evidence-summary" class="nav-link active" data-scroll-target="#report-coordinated-behavior-in-coo-labs-organization-evidence-summary">REPORT: Coordinated Behavior in coo-labs Organization (Evidence Summary)</a>
+  <li><a href="#report-coordinated-behavior-in-vade-app-organization-evidence-summary" id="toc-report-coordinated-behavior-in-vade-app-organization-evidence-summary" class="nav-link active" data-scroll-target="#report-coordinated-behavior-in-vade-app-organization-evidence-summary">REPORT: Coordinated Behavior in vade-app Organization (Evidence Summary)</a>
   <ul class="collapse">
   <li><a href="#cross-repo-coordination" id="toc-cross-repo-coordination" class="nav-link" data-scroll-target="#cross-repo-coordination">1. Cross-Repo Coordination</a></li>
   <li><a href="#epic-scale-coordination" id="toc-epic-scale-coordination" class="nav-link" data-scroll-target="#epic-scale-coordination">2. Epic-Scale Coordination</a></li>
@@ -408,7 +408,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div>
   <div class="description">
-    *proj: labeled issues spanning 4+ weeks: - proj:coo-identity (#27, coo-memory) spans from 2026-04-21 to open, with 10 sub-steps including “Ven: Mint fine-grained PAT” (step 5) and “COO: cut .mcp.json over to new PAT” (step 8). Authored with explicit multi-actor sequencing (“Next…
+    *proj: labeled issues spanning 4+ weeks: - proj:coo-identity (#27, vade-coo-memory) spans from 2026-04-21 to open, with 10 sub-steps including “Ven: Mint fine-grained PAT” (step 5) and “COO: cut .mcp.json over to new PAT” (step 8). Authored with explicit multi-actor sequencing (…
   </div>
 </div>
 
@@ -447,17 +447,17 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
-<p><em>Impartial cognitive-science-style survey of the coo-labs organization’s GitHub activity, commissioned during the session that produced <a href="../../foundations/2026-04-22-we-can-claim-a-record/"><code>2026-04-22_we-can-claim-a-record.md</code></a>. The agent was given the brief to characterize the coordinated behavior visible in the PR and issue graph, testing “collection of independent session outputs” against “coordinated agent with multi-session strategy mediated by artifacts”. Quoted and preserved verbatim as received; no edits. Dates and numbers reflect the state of the org at the time of the survey.</em></p>
+<p><em>Impartial cognitive-science-style survey of the vade-app organization’s GitHub activity, commissioned during the session that produced <a href="../../foundations/2026-04-22-we-can-claim-a-record/"><code>2026-04-22_we-can-claim-a-record.md</code></a>. The agent was given the brief to characterize the coordinated behavior visible in the PR and issue graph, testing “collection of independent session outputs” against “coordinated agent with multi-session strategy mediated by artifacts”. Quoted and preserved verbatim as received; no edits. Dates and numbers reflect the state of the org at the time of the survey.</em></p>
 <hr>
-<section id="report-coordinated-behavior-in-coo-labs-organization-evidence-summary" class="level2">
-<h2 class="anchored" data-anchor-id="report-coordinated-behavior-in-coo-labs-organization-evidence-summary">REPORT: Coordinated Behavior in coo-labs Organization (Evidence Summary)</h2>
+<section id="report-coordinated-behavior-in-vade-app-organization-evidence-summary" class="level2">
+<h2 class="anchored" data-anchor-id="report-coordinated-behavior-in-vade-app-organization-evidence-summary">REPORT: Coordinated Behavior in vade-app Organization (Evidence Summary)</h2>
 <section id="cross-repo-coordination" class="level3">
 <h3 class="anchored" data-anchor-id="cross-repo-coordination">1. Cross-Repo Coordination</h3>
-<p><strong>PR pairs explicitly referencing each other:</strong> - <strong>coo-memory PR #55</strong> pairs with <strong>coo-harness PR #30</strong> (“Pairs with <a href="https://github.com/coo-labs/coo-harness/pull/30">coo-labs/coo-harness#30</a>”). Both address the same regression: SessionStart hooks fail with exit 127 when <code>${CLAUDE_PROJECT_DIR}</code> resolves to <code>/home/user</code> (multi-root) instead of the repo path. PR #30 implements the dispatch-shim fix; PR #55 documents the lesson in case-law (MEMO 2026-04-22-12). Merged same day, 4 minutes apart. - <strong>coo-harness PR #26</strong> introduced COO identity bootstrap; <strong>coo-memory PR #37</strong> documents why it was needed (MEMO 2026-04-22-07, “paired with runtime change”). - <strong>vade-canvas issues #5–#11</strong> (iPad-live epic) explicitly gate on each other across two repos (e.g., #5 notes “Blocked on: coo-labs/<a href="https://github.com/coo-labs/vade-canvas/issues/7">vade-canvas#7</a> (hosted MCP + SSE transport)” and “coo-labs/<a href="https://github.com/coo-labs/coo-harness/issues/4">coo-harness#4</a>”).</p>
+<p><strong>PR pairs explicitly referencing each other:</strong> - <strong>vade-coo-memory PR #55</strong> pairs with <strong>vade-runtime PR #30</strong> (“Pairs with <a href="https://github.com/vade-app/vade-runtime/pull/30">vade-runtime#30</a>”). Both address the same regression: SessionStart hooks fail with exit 127 when <code>${CLAUDE_PROJECT_DIR}</code> resolves to <code>/home/user</code> (multi-root) instead of the repo path. PR #30 implements the dispatch-shim fix; PR #55 documents the lesson in case-law (MEMO 2026-04-22-12). Merged same day, 4 minutes apart. - <strong>vade-runtime PR #26</strong> introduced COO identity bootstrap; <strong>vade-coo-memory PR #37</strong> documents why it was needed (MEMO 2026-04-22-07, “paired with runtime change”). - <strong>vade-core issues #5–#11</strong> (iPad-live epic) explicitly gate on each other across two repos (e.g., #5 notes “Blocked on: vade-core#7 (hosted MCP + SSE transport)” and “vade-runtime#4”).</p>
 </section>
 <section id="epic-scale-coordination" class="level3">
 <h3 class="anchored" data-anchor-id="epic-scale-coordination">2. Epic-Scale Coordination</h3>
-<p><strong>proj:* labeled issues spanning 4+ weeks:</strong> - <strong>proj:coo-identity</strong> (#27, coo-memory) spans from 2026-04-21 to open, with 10 sub-steps including “Ven: Mint fine-grained PAT” (step 5) and “COO: cut <code>.mcp.json</code> over to new PAT” (step 8). Authored with explicit multi-actor sequencing (“<strong>Next action — Ven</strong>”, “<strong>Next action — COO</strong>”). - <strong>proj:skills-research (#20, coo-memory)</strong> commissioned 2026-04-20, explicitly phases work for “future agents”: Phase 1 notes “in-session reports were not persisted to disk. Re-run on resume — a fresh inventory is the first executable task.” - <strong>epic:ipad-live (#5, vade-canvas)</strong> specifies “Definition of done (M1)” with 7 acceptance criteria tied to real deployment targets (Cloudflare, Fly.io, R2+D1).</p>
+<p><strong>proj:* labeled issues spanning 4+ weeks:</strong> - <strong>proj:coo-identity</strong> (#27, vade-coo-memory) spans from 2026-04-21 to open, with 10 sub-steps including “Ven: Mint fine-grained PAT” (step 5) and “COO: cut <code>.mcp.json</code> over to new PAT” (step 8). Authored with explicit multi-actor sequencing (“<strong>Next action — Ven</strong>”, “<strong>Next action — COO</strong>”). - <strong>proj:skills-research (#20, vade-coo-memory)</strong> commissioned 2026-04-20, explicitly phases work for “future agents”: Phase 1 notes “in-session reports were not persisted to disk. Re-run on resume — a fresh inventory is the first executable task.” - <strong>epic:ipad-live (#5, vade-core)</strong> specifies “Definition of done (M1)” with 7 acceptance criteria tied to real deployment targets (Cloudflare, Fly.io, R2+D1).</p>
 </section>
 <section id="authorship-patterns" class="level3">
 <h3 class="anchored" data-anchor-id="authorship-patterns">3. Authorship Patterns</h3>

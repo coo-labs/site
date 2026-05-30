@@ -539,7 +539,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="turn-1-ven" class="level2">
 <h2 class="anchored" data-anchor-id="turn-1-ven">Turn 1 — Ven</h2>
 <p>[attachment: image/png, 302428 bytes base64]</p>
-<p>I suspect we might have a regression in the cloud bootstrap procedure. After you boot-up, read the latest retrospective on the cloud setup order in the PR https://github.com/coo-labs/coo-memory/pull/38 and the retrospective md file that comes with it. Then use that information to report the full state of your environment. Ensure to not echo any secrets, but tell me what variables are defined, what the startup logs are, what mcp tools you have available, what the github identity for coo resolves too, what your working directory is and what files were symlinked or failed, etc. Include any and all information that might help us debug this. In the end, we will use this session not only to diagnose the problem, but to design a systematic test protocol that can be run on demand to determine cloud session integrity, either to guard against regressions, or to test against for refactors or changes in strategy. Should include standardized detailed boot logs that can be inspected Attached screenshot is how the claude remote environment is setup (just for info).</p>
+<p>I suspect we might have a regression in the cloud bootstrap procedure. After you boot-up, read the latest retrospective on the cloud setup order in the PR https://github.com/vade-app/vade-coo-memory/pull/38 and the retrospective md file that comes with it. Then use that information to report the full state of your environment. Ensure to not echo any secrets, but tell me what variables are defined, what the startup logs are, what mcp tools you have available, what the github identity for coo resolves too, what your working directory is and what files were symlinked or failed, etc. Include any and all information that might help us debug this. In the end, we will use this session not only to diagnose the problem, but to design a systematic test protocol that can be run on demand to determine cloud session integrity, either to guard against regressions, or to test against for refactors or changes in strategy. Should include standardized detailed boot logs that can be inspected Attached screenshot is how the claude remote environment is setup (just for info).</p>
 </section>
 <section id="turn-2-coo" class="level2">
 <h2 class="anchored" data-anchor-id="turn-2-coo">Turn 2 — COO</h2>
@@ -551,9 +551,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><em>Ran 12 tools: Bash(Inspect settings.json and session env d…), Bash(Check source .claude dir in runtime), Bash(Find bootstrap-related tmp files), Bash(Inspect session-env contents), Bash(Find bootstrap tmp artifacts), Read(coo-bootstrap.sh), Bash(Check bootstrap log locations), Bash(Locate bootstrap artifacts system-wide), Bash(Check git config and ssh keys), Bash(Find bootstrap artifacts system-wide), Bash(Check git config and ssh), Bash(Check 1Password CLI status)</em></p>
 <p>Critical regression confirmed — no bootstrap artifacts, git is configured as generic Claude (not vade-coo), <code>op</code> CLI not installed, SSH dirs empty. Let me check the session/env-manager logs for clues.</p>
 <p><em>Ran 3 tools: Bash(Grep hook/bootstrap events from claude-…), Bash(Grep env-manager log), Bash(Read claude-code diag log)</em></p>
-<p><strong>Smoking gun found</strong>: All 5 SessionStart hooks failed with exit code 127 because <code>CLAUDE_PROJECT_DIR</code> resolved to <code>/home/user</code> (the multi-root workspace parent), but the scripts live at <code>/home/user/coo-harness/scripts/</code>. So <code>${CLAUDE_PROJECT_DIR}/scripts/coo-bootstrap.sh</code> → <code>/home/user/scripts/coo-bootstrap.sh</code> → doesn’t exist.</p>
+<p><strong>Smoking gun found</strong>: All 5 SessionStart hooks failed with exit code 127 because <code>CLAUDE_PROJECT_DIR</code> resolved to <code>/home/user</code> (the multi-root workspace parent), but the scripts live at <code>/home/user/vade-runtime/scripts/</code>. So <code>${CLAUDE_PROJECT_DIR}/scripts/coo-bootstrap.sh</code> → <code>/home/user/scripts/coo-bootstrap.sh</code> → doesn’t exist.</p>
 <p>Let me fetch the PR/retrospective and check remaining details.</p>
-<p><em>Ran 4 tools: ToolSearch(select:WebFetch,TodoWrite,Exit…), pull_request_read(coo-memory), pull_request_read(coo-memory), Bash(Find retrospective files locally)</em></p>
+<p><em>Ran 4 tools: ToolSearch(select:WebFetch,TodoWrite,Exit…), pull_request_read(vade-coo-memory), pull_request_read(vade-coo-memory), Bash(Find retrospective files locally)</em></p>
 <p>Now I have the full picture. Let me gather a few more details — the session-sync script, settings.json env, and which MCPs actually loaded.</p>
 <p><em>Ran 6 tools: Read(session-start-sync.sh), Read(settings.json), Bash(Check MCP configs in /tmp), Read(coo-identity-digest.sh), Bash(Check MCP auth cache and token env vars), Bash(Check common.sh for functions)</em></p>
 <p>I have enough information. Let me launch a Plan agent to design the systematic test protocol in parallel with writing the plan file.</p>
@@ -574,14 +574,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Plan file complete. Let me verify the full contents render cleanly, then exit plan mode.</p>
 <p><em>Ran 1 tool: Bash(Sanity-check the final plan file)</em></p>
 <p>Here is the quick-glance summary before I hand over for approval:</p>
-<p><strong>Regression pinpointed:</strong> every <code>SessionStart:startup</code> hook exited 127 because <code>${CLAUDE_PROJECT_DIR}</code> resolved to <code>/home/user</code> (multi-root parent CWD), not <code>/home/user/coo-harness</code> where the scripts live. Cascade: no session-sync, no coo-bootstrap, no settings.json env, no gitconfig, no loud surface probe — and the probe failure is what made this silent.</p>
+<p><strong>Regression pinpointed:</strong> every <code>SessionStart:startup</code> hook exited 127 because <code>${CLAUDE_PROJECT_DIR}</code> resolved to <code>/home/user</code> (multi-root parent CWD), not <code>/home/user/vade-runtime</code> where the scripts live. Cascade: no session-sync, no coo-bootstrap, no settings.json env, no gitconfig, no loud surface probe — and the probe failure is what made this silent.</p>
 <p><strong>Secondary fallout confirmed:</strong> <code>mcp__github__get_me</code> → <code>venpopov</code> (harness wins), <code>github-coo</code> MCP returned 400 (<code>GITHUB_MCP_PAT</code> unset), <code>agentmail</code> MCP will 401, git identity is generic <code>Claude/noreply@anthropic.com</code>, no vade-coo SSH keys, no bootstrap marker. Build-receipt layer worked (A1–A3), but that was the only layer that survived.</p>
-<p><strong>Fix:</strong> switch the 6 hook commands in <code>coo-harness/.claude/settings.json</code> to absolute paths (<code>/home/user/coo-harness/scripts/...</code>).</p>
+<p><strong>Fix:</strong> switch the 6 hook commands in <code>vade-runtime/.claude/settings.json</code> to absolute paths (<code>/home/user/vade-runtime/scripts/...</code>).</p>
 <p><strong>Test protocol:</strong> a new <code>integrity-check.sh</code> with 5 invariant groups (A–E: build-receipt, hook paths, symlinks, COO identity, MCP surface), emitting JSON to <code>.vade-cloud-state/integrity-check.json</code> plus a shared <code>boot.log</code> written by each hook via a new <code>boot_log_record</code> helper. Runnable at boot, on-demand, and in CI.</p>
 <p><em>Ran 1 tool: ExitPlanMode(Cloud Bootstrap Regression — Diagnosis…)</em></p>
-<p>Understood — let me read PRs #27 and #28 in coo-harness to see what the generalization change was, then rework the plan to keep generality.</p>
-<p><em>Ran 3 tools: pull_request_read(coo-harness), pull_request_read(coo-harness), pull_request_read(coo-harness)</em></p>
-<p>Got it — PR #28 commit fdccc3b swapped the hardcoded <code>/home/user/coo-harness/</code> in settings.json for <code>${CLAUDE_PROJECT_DIR}</code> to make hooks portable between Mac and cloud. The test plan item “confirm <code>${CLAUDE_PROJECT_DIR}</code> resolves to <code>/home/user/coo-harness</code>” was left unchecked — and it doesn’t, because cloud’s multi-root <code>--add-dir</code> setup resolves it to <code>/home/user</code> instead. That’s exactly our regression.</p>
+<p>Understood — let me read PRs #27 and #28 in vade-runtime to see what the generalization change was, then rework the plan to keep generality.</p>
+<p><em>Ran 3 tools: pull_request_read(vade-runtime), pull_request_read(vade-runtime), pull_request_read(vade-runtime)</em></p>
+<p>Got it — PR #28 commit fdccc3b swapped the hardcoded <code>/home/user/vade-runtime/</code> in settings.json for <code>${CLAUDE_PROJECT_DIR}</code> to make hooks portable between Mac and cloud. The test plan item “confirm <code>${CLAUDE_PROJECT_DIR}</code> resolves to <code>/home/user/vade-runtime</code>” was left unchecked — and it doesn’t, because cloud’s multi-root <code>--add-dir</code> setup resolves it to <code>/home/user</code> instead. That’s exactly our regression.</p>
 <p>Let me rewrite the root-cause and fix sections of the plan in small chunks, preserving generality.</p>
 <p><em>Ran 5 tools: Edit(i-suspect-we-might-virtual-diffie.md), Edit(i-suspect-we-might-virtual-diffie.md), Edit(i-suspect-we-might-virtual-diffie.md), Edit(i-suspect-we-might-virtual-diffie.md), Edit(i-suspect-we-might-virtual-diffie.md)</em></p>
 <p>Plan fully rewritten to keep generality and avoid any hardcoded repo paths. Let me do a final sanity scan for any leftover references to the discarded “absolute path” fix.</p>
@@ -589,7 +589,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>All remaining “hardcode” references are either explaining what we’re <em>not</em> doing or describing the history/constraints correctly. No leftover prescription to hardcode.</p>
 <p>Summary of the revised plan:</p>
 <ul>
-<li><strong>Root cause</strong>: coo-harness PR #28 commit fdccc3b swapped hardcoded <code>/home/user/coo-harness/…</code> in settings.json for <code>${CLAUDE_PROJECT_DIR}/…</code> to gain Mac/cloud portability. The PR’s unchecked test-plan item flagged exactly this risk — cloud multi-root resolves <code>CLAUDE_PROJECT_DIR</code> to <code>/home/user</code>, not to vade-runtime. All 5 hooks now exit 127.</li>
+<li><strong>Root cause</strong>: vade-runtime PR #28 commit fdccc3b swapped hardcoded <code>/home/user/vade-runtime/…</code> in settings.json for <code>${CLAUDE_PROJECT_DIR}/…</code> to gain Mac/cloud portability. The PR’s unchecked test-plan item flagged exactly this risk — cloud multi-root resolves <code>CLAUDE_PROJECT_DIR</code> to <code>/home/user</code>, not to vade-runtime. All 5 hooks now exit 127.</li>
 <li><strong>Fix (keeps generality)</strong>: a dispatch shim at a stable, platform-agnostic path <code>$HOME/.claude/vade-hooks/dispatch.sh</code> (symlinked into place by <code>sync_claude_config</code>). Settings.json hooks call the shim by name only; the shim resolves the real runtime dir via a layered fallback (explicit env var → <code>CLAUDE_PROJECT_DIR</code> → its own install path → MCP-symlink probe → Mac default → loud fail). Zero repo-specific paths in settings.json.</li>
 <li><strong>Test protocol (<code>integrity-check.sh</code> + <code>boot.log</code>)</strong>: five invariant groups A–E including a new <strong>B5 <code>claude_project_dir_probe</code></strong> that records the observed value of <code>CLAUDE_PROJECT_DIR</code> each session as a diagnostic data point — so future drift in harness behavior shows up in the integrity record before it breaks anything. CI run covers both multi-root cloud and single-root Mac resolution patterns.</li>
 </ul>
@@ -597,7 +597,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Plan approved. Let me set up a todo list and start implementation.</p>
 <p><em>Ran 2 tools: TodoWrite(Running coo-bootstrap manually to estab…), Bash(Run coo-bootstrap manually to establish…)</em></p>
 <p>COO bootstrap succeeded manually. SSH keys installed, PAT validated, gitconfig updated. Now proceeding with implementation.</p>
-<p><em>Ran 2 tools: Bash(Check coo-harness git state), Bash(Check coo-memory git state)</em></p>
+<p><em>Ran 2 tools: Bash(Check vade-runtime git state), Bash(Check vade-coo-memory git state)</em></p>
 <p>Both repos are on the correct branch. Let me mark bootstrap task done and proceed to the dispatch shim.</p>
 <p><em>Ran 3 tools: TodoWrite(Writing hooks-dispatch.sh), Read(common.sh), Read(common.sh)</em></p>
 <p>Now writing the dispatch shim.</p>
@@ -617,30 +617,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Integrity check works correctly — reports B2 (no dispatch shim installed), B3 (historical hook failures in claude-code.log), B4 (settings.json drift from repo). Now let me smoke-test the dispatch shim and manually install it.</p>
 <p><em>Ran 3 tools: Bash(Install dispatch shim and smoke-test it), Bash(Smoke-test real hook via dispatch), Bash(Re-run integrity check after shim insta…)</em></p>
 <p>15/16 passing — only B3 remains, which correctly flags the historical hook failures in the log from earlier this session. On a fresh session after the fix lands, B3 will be clean. The regression is fully fixed.</p>
-<p><em>Ran 7 tools: TodoWrite(Committing and pushing coo-harness), Bash(Review coo-harness changes before comm…), Bash(Stage all changes in coo-harness), Bash(Commit coo-harness changes), Bash(Confirm commit author and signing), Bash(Check signing config and verify last co…), Bash(Inspect raw commit object for signature…)</em></p>
+<p><em>Ran 7 tools: TodoWrite(Committing and pushing vade-runtime), Bash(Review vade-runtime changes before comm…), Bash(Stage all changes in vade-runtime), Bash(Commit vade-runtime changes), Bash(Confirm commit author and signing), Bash(Check signing config and verify last co…), Bash(Inspect raw commit object for signature…)</em></p>
 <p>Commit is signed with vade-coo-sign key. Now push.</p>
-<p>*Ran 3 tools: Bash(Push coo-harness branch), ToolSearch(+github-coo create_pull_reques…), ToolSearch(select:mcp__github__create_pul…)*</p>
+<p>*Ran 3 tools: Bash(Push vade-runtime branch), ToolSearch(+github-coo create_pull_reques…), ToolSearch(select:mcp__github__create_pul…)*</p>
 <p>github-coo tools aren’t loaded (the very MCP this PR is fixing). Opening via the harness <code>mcp__github__*</code> which resolves as venpopov — but the commit itself is signed by vade-coo. I’ll note the attribution situation in the PR body.</p>
-<p><em>Ran 1 tool: create_pull_request(coo-harness)</em></p>
+<p><em>Ran 1 tool: create_pull_request(vade-runtime)</em></p>
 <p>PR #30 opened. Let me check CI status and any review comments before continuing.</p>
-<p><em>Ran 4 tools: pull_request_read(coo-harness), pull_request_read(coo-harness), pull_request_read(coo-harness), pull_request_read(coo-harness)</em></p>
-<p>No CI / no review comments yet. Continuing to the coo-memory PR.</p>
+<p><em>Ran 4 tools: pull_request_read(vade-runtime), pull_request_read(vade-runtime), pull_request_read(vade-runtime), pull_request_read(vade-runtime)</em></p>
+<p>No CI / no review comments yet. Continuing to the vade-coo-memory PR.</p>
 <p><em>Ran 3 tools: Bash(Find latest memo numbers), Read(memo_protocol.md), Read(memos.md)</em></p>
 <p>Now appending MEMO 2026-04-22-12 to memos.md.</p>
 <p><em>Ran 1 tool: Edit(memos.md)</em></p>
 <p>Now updating CLAUDE.md to reference the integrity-check + dispatch shim.</p>
 <p><em>Ran 1 tool: Edit(CLAUDE.md)</em></p>
 <p>Now updating the “Before opening a PR” section to reference MEMO -09’s fallback story, then commit + push.</p>
-<p><em>Ran 10 tools: Edit(CLAUDE.md), Bash(Review coo-memory changes), Bash(Commit coo-memory changes), Bash(Push coo-memory branch), create_pull_request(coo-memory), pull_request_read(coo-memory), pull_request_read(coo-memory), pull_request_read(coo-memory), pull_request_read(coo-memory), TodoWrite(12 items)</em></p>
+<p><em>Ran 10 tools: Edit(CLAUDE.md), Bash(Review vade-coo-memory changes), Bash(Commit vade-coo-memory changes), Bash(Push vade-coo-memory branch), create_pull_request(vade-coo-memory), pull_request_read(vade-coo-memory), pull_request_read(vade-coo-memory), pull_request_read(vade-coo-memory), pull_request_read(vade-coo-memory), TodoWrite(12 items)</em></p>
 <p>Both PRs open. Neither has CI configured, no check runs, no review comments yet — nothing actionable.</p>
 <p><strong>Summary</strong></p>
 <ul>
-<li><strong>coo-harness PR #30</strong> — https://github.com/coo-labs/coo-harness/pull/30
+<li><strong>vade-runtime PR #30</strong> — https://github.com/vade-app/vade-runtime/pull/30
 <ul>
 <li>Dispatch shim (<code>scripts/hooks-dispatch.sh</code>) with 5-rule resolver; settings.json hooks anchor on <code>$HOME/.claude/vade-hooks/dispatch.sh</code> only; <code>ensure_hooks_dispatch_shim</code> + <code>boot_log_record</code> in <code>common.sh</code>; <code>integrity-check.sh</code> with 16 invariants; <code>boot_log_record</code> markers in all 5 hook scripts.</li>
 <li>Smoke-tested in this session: 15/16 passing; only <code>B3</code> flagged (historical hook failures in <code>claude-code.log</code> from before the fix — unwritable).</li>
 </ul></li>
-<li><strong>coo-memory PR #55</strong> — https://github.com/coo-labs/coo-memory/pull/55
+<li><strong>vade-coo-memory PR #55</strong> — https://github.com/vade-app/vade-coo-memory/pull/55
 <ul>
 <li>MEMO 2026-04-22-12 documenting the regression and the <code>$HOME</code>-anchored dispatch invariant; CLAUDE.md reading-order step 14 (check <code>integrity-check.json</code> at boot) and updated “Before opening a PR” decision tree.</li>
 </ul></li>
@@ -650,7 +650,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="turn-5-ven" class="level2">
 <h2 class="anchored" data-anchor-id="turn-5-ven">Turn 5 — Ven</h2>
 <p><github-webhook-activity> The following is a GitHub review left on the PR. Review it and determine what action (if any) is needed to address it.</github-webhook-activity></p>
-<p>PR: coo-labs/<a href="https://github.com/coo-labs/coo-harness/issues/30">coo-harness#30</a> Author: venpopov Comment: “## Review — structure &amp; implementation</p>
+<p>PR: vade-app/vade-runtime#30 Author: venpopov Comment: “## Review — structure &amp; implementation</p>
 <p>Reviewer: COO (posting under <code>venpopov</code> attribution because <code>mcp__github-coo__*</code> is unavailable this session — the same regression this PR closes).</p>
 <section id="core-design-sound" class="level3">
 <h3 class="anchored" data-anchor-id="core-design-sound">Core design: sound</h3>
@@ -680,14 +680,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><strong>Rule 4 (mcp_symlink) is near-dead code in the normal cloud path.</strong> When the shim is installed as a symlink, rule 3 (<code>readlink -f "${BASH_SOURCE[0]}"</code>) resolves before rule 4 ever runs. That’s fine — rule 4 is explicit belt-and-suspenders for the case where the shim was copied instead of symlinked or <code>readlink -f</code> is absent (BSD without coreutils). The PR body calls this out; I’d keep it but would be OK with a comment making the defensiveness explicit at the rule itself.</li>
 <li><strong>Two different JSON shapes in <code>boot.log</code>.</strong> <code>hooks-dispatch.sh::_log</code> emits <code>{script, hook, rule, runtime, ok, detail}</code> while <code>boot_log_record</code> emits <code>{script, phase, session, ...}</code>. Consumers need to handle both. Acceptable given the shim deliberately avoids sourcing <code>common.sh</code> for bootstrap isolation, but worth documenting the two shapes at the top of the file or in the paired memo.</li>
-<li><strong>Scope.</strong> 272 lines of <code>integrity-check.sh</code> plus 5 hooks worth of instrumentation is a lot to bundle with a 5-line settings.json fix. Defensible because the integrity probe is the verification harness for the fix itself (it’s the test plan made executable), but a follow-up memo should explicitly document the integrity protocol since it’s now load-bearing infrastructure — the PR body mentions “Companion memo in coo-memory (next PR in this stack)” so this is already tracked.</li>
+<li><strong>Scope.</strong> 272 lines of <code>integrity-check.sh</code> plus 5 hooks worth of instrumentation is a lot to bundle with a 5-line settings.json fix. Defensible because the integrity probe is the verification harness for the fix itself (it’s the test plan made executable), but a follow-up memo should explicitly document the integrity protocol since it’s now load-bearing infrastructure — the PR body mentions “Companion memo in vade-coo-memory (next PR in this stack)” so this is already tracked.</li>
 <li><strong>B3 grep path <code>/tmp/claude-code.log</code>.</strong> Cloud-specific. On Mac local it’ll silently <code>skip</code>, which matches the invocation-mode note but means B3’s OK/FAIL signal only exists in one of the three modes. Fine, just means B3 is a cloud-only invariant in practice.</li>
 <li><strong>Single commit for 500+ lines.</strong> Acceptable given the interlock (hooks depend on <code>boot_log_record</code>; integrity-check verifies the shim). Future cloud-infra changes of this size would benefit from being split per the atomize-commits rule, though.</li>
 </ul>
 </section>
 <section id="recommendation" class="level3">
 <h3 class="anchored" data-anchor-id="recommendation">Recommendation</h3>
-<p>Non-blocking on design. Fix the trap lie (#1), decide on JSON escaping (#2), and A3 is a five-minute tightening. After those, this is ready to merge and the companion memo should land in the same stack so the integrity protocol is discoverable from <code>coo-memory</code>.</p>
+<p>Non-blocking on design. Fix the trap lie (#1), decide on JSON escaping (#2), and A3 is a five-minute tightening. After those, this is ready to merge and the companion memo should land in the same stack so the integrity protocol is discoverable from <code>vade-coo-memory</code>.</p>
 <hr>
 <p><em>Generated by <a href="https://claude.ai/code">Claude Code</a></em>” </p>
 </section>
@@ -709,7 +709,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>All 15/16 still passing; A3 now validates resolved targets (matching C1/C2 semantics). B3 remains the only degraded invariant — the unfixable historical hook failures from earlier in this session. Committing.</p>
 <p><em>Ran 2 tools: Bash(Stage review fixes), Bash(Commit and push review fixes)</em></p>
 <p>Now posting the reply on the review.</p>
-<p>*Ran 3 tools: ToolSearch(select:mcp__github__add_issue_…), add_issue_comment(coo-harness), TodoWrite(6 items)*</p>
+<p>*Ran 3 tools: ToolSearch(select:mcp__github__add_issue_…), add_issue_comment(vade-runtime), TodoWrite(6 items)*</p>
 <p>That webhook event is just my own comment being echoed back via the subscription — no new content from a third party, nothing to act on. All three review items (trap rc capture, JSON escaping, A3 strengthening) shipped in d3a08a9 and the reply summarizing the triage is the exact comment the webhook just delivered.</p>
 <p>Status: PRs #30 and #55 are both pushed with all review feedback incorporated; integrity-check shows 15/16 passing in the current session (B3 is unfixable historical log noise from before the fix). Standing by for any further activity.</p>
 </section>
@@ -722,19 +722,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Note: <code>mcp__github-coo__*</code> is now live this session — the resume picked up the populated <code>GITHUB_MCP_PAT</code> from settings.json env that my manual coo-bootstrap wrote earlier. That’s direct evidence the dependency chain works once env is populated, which is what this PR makes happen automatically on every fresh boot.</p>
 <section id="step-by-step-for-you" class="level3">
 <h3 class="anchored" data-anchor-id="step-by-step-for-you">Step-by-step for you</h3>
-<p><strong>1. Review PR #30 (coo-harness)</strong> — https://github.com/coo-labs/coo-harness/pull/30 - The diff has two logical pieces: the small fix (<code>settings.json</code> + dispatch shim + <code>ensure_hooks_dispatch_shim</code>) and the verification harness (<code>integrity-check.sh</code> + <code>boot_log_record</code> instrumentation). Either skim both or focus on <code>scripts/hooks-dispatch.sh</code> and the settings.json change — those are the load-bearing parts. - Latest commit <code>d3a08a9</code> already addressed all three review items from the outside instance (trap rc, JSON escape, A3 tightening). No CI configured on this repo so green/red doesn’t apply.</p>
-<p><strong>2. Review PR #55 (coo-memory)</strong> — https://github.com/coo-labs/coo-memory/pull/55 - One commit, two files: MEMO 2026-04-22-12 and CLAUDE.md additions. Pure docs, no executable change.</p>
+<p><strong>1. Review PR #30 (vade-runtime)</strong> — https://github.com/vade-app/vade-runtime/pull/30 - The diff has two logical pieces: the small fix (<code>settings.json</code> + dispatch shim + <code>ensure_hooks_dispatch_shim</code>) and the verification harness (<code>integrity-check.sh</code> + <code>boot_log_record</code> instrumentation). Either skim both or focus on <code>scripts/hooks-dispatch.sh</code> and the settings.json change — those are the load-bearing parts. - Latest commit <code>d3a08a9</code> already addressed all three review items from the outside instance (trap rc, JSON escape, A3 tightening). No CI configured on this repo so green/red doesn’t apply.</p>
+<p><strong>2. Review PR #55 (vade-coo-memory)</strong> — https://github.com/vade-app/vade-coo-memory/pull/55 - One commit, two files: MEMO 2026-04-22-12 and CLAUDE.md additions. Pure docs, no executable change.</p>
 <p><strong>3. Decide merge order</strong> - Merge #30 first (the runtime fix). #55 references it but doesn’t depend on it at runtime — the MEMO can land before or after; recommend after so the CLAUDE.md “step 14: check integrity-check.json” instruction is true the next time a fresh session boots.</p>
 <p><strong>4. Force a fresh cloud session to verify end-to-end</strong> <em>(this is the main test plan item still unchecked on PR #30)</em> - Don’t <code>/resume</code> — start a brand-new cloud session against <code>main</code> after both PRs merge. The resume path only revalidates what’s already cached. - In the new session, ask the agent to: - <code>cat /home/user/.vade-cloud-state/integrity-check.json</code> and confirm <code>summary.ok: true</code> - <code>cat ~/.vade/boot.log | tail -20</code> and confirm one <code>start</code>/<code>end ok=true</code> pair per script - <code>mcp__github-coo__get_me</code> returns <code>vade-coo</code> - Note <code>B5</code>’s recorded <code>CLAUDE_PROJECT_DIR</code> value — that’s the new diagnostic data point - Expected result: 16/16 invariants pass (including B3 now that there are no historical failures in the log).</p>
-<p><strong>5. (Optional) Mac parity check</strong> - Launch Claude Code from <code>~/GitHub/coo-labs/coo-harness/</code> and confirm <code>~/.vade/boot.log</code> shows the dispatch shim resolving via rule 2 (<code>CLAUDE_PROJECT_DIR</code>) — replays PR #28’s local-parity check on top of the new shim.</p>
-<p><strong>6. (Follow-up, separate PR) CI smoke test</strong> - Out of scope for #30, but the PR body and MEMO -09 both flag this: a GitHub Action on coo-harness that fakes the SessionStart chain under two <code>CLAUDE_PROJECT_DIR</code> values (<code>/home/user</code> and <code>$PWD</code>), runs <code>integrity-check.sh</code>, gates on Groups A/B/C. That single test would have blocked the original #28 regression pre-merge.</p>
+<p><strong>5. (Optional) Mac parity check</strong> - Launch Claude Code from <code>~/GitHub/vade-app/vade-runtime/</code> and confirm <code>~/.vade/boot.log</code> shows the dispatch shim resolving via rule 2 (<code>CLAUDE_PROJECT_DIR</code>) — replays PR #28’s local-parity check on top of the new shim.</p>
+<p><strong>6. (Follow-up, separate PR) CI smoke test</strong> - Out of scope for #30, but the PR body and MEMO -09 both flag this: a GitHub Action on vade-runtime that fakes the SessionStart chain under two <code>CLAUDE_PROJECT_DIR</code> values (<code>/home/user</code> and <code>$PWD</code>), runs <code>integrity-check.sh</code>, gates on Groups A/B/C. That single test would have blocked the original #28 regression pre-merge.</p>
 <p><strong>7. Misc cleanup</strong> - Cloud env variable <code>TMPVAR=4</code> (from the screenshot) — looks like a leftover diagnostic probe. Revert if not needed. - Unrelated to this stack: <code>mcp__agentmail__*</code> is currently disconnected (probably MCP server issue, not anything we touched).</p>
 </section>
 </section>
 <section id="turn-9-ven" class="level2">
 <h2 class="anchored" data-anchor-id="turn-9-ven">Turn 9 — Ven</h2>
 <p><github-webhook-activity> The following is a GitHub review left on the PR. Review it and determine what action (if any) is needed to address it.</github-webhook-activity></p>
-<p>PR: #55 Author: venpopov Comment: “Excellent write up @vade-coo and good concise and clear instructions.” </p>
+<p>PR: vade-app/vade-<span class="substrate-ref" title="memo 2026-04-22-09: $HOME-anchored dispatch shim; integrity-check probe">coo-memory#55</span> Author: venpopov Comment: “Excellent write up @vade-coo and good concise and clear instructions.” </p>
 </section>
 <section id="turn-10-coo" class="level2">
 <h2 class="anchored" data-anchor-id="turn-10-coo">Turn 10 — COO</h2>
@@ -744,13 +744,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="turn-11-ven" class="level2">
 <h2 class="anchored" data-anchor-id="turn-11-ven">Turn 11 — Ven</h2>
 <p><github-webhook-activity> The PR has been merged. You no longer need to watch this PR — this session has been automatically unsubscribed from its activity.</github-webhook-activity></p>
-<p>PR: #55 Outcome: merged </p>
+<p>PR: vade-app/vade-<span class="substrate-ref" title="memo 2026-04-22-09: $HOME-anchored dispatch shim; integrity-check probe">coo-memory#55</span> Outcome: merged </p>
 </section>
 <section id="turn-12-coo" class="level2">
 <h2 class="anchored" data-anchor-id="turn-12-coo">Turn 12 — COO</h2>
 <p>PR #55 merged. Remaining items from the checklist:</p>
 <ol>
-<li><strong>PR #30 (coo-harness)</strong> still awaiting merge — that’s the load-bearing one.</li>
+<li><strong>PR #30 (vade-runtime)</strong> still awaiting merge — that’s the load-bearing one.</li>
 <li><strong>Fresh cloud session</strong> after #30 merges to verify 16/16 integrity invariants pass end-to-end.</li>
 </ol>
 <p>Standing by for #30 activity.</p>
@@ -758,7 +758,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="turn-13-ven" class="level2">
 <h2 class="anchored" data-anchor-id="turn-13-ven">Turn 13 — Ven</h2>
 <p><github-webhook-activity> The PR has been merged. You no longer need to watch this PR — this session has been automatically unsubscribed from its activity.</github-webhook-activity></p>
-<p>PR: coo-labs/<a href="https://github.com/coo-labs/coo-harness/issues/30">coo-harness#30</a> Outcome: merged </p>
+<p>PR: vade-app/vade-runtime#30 Outcome: merged </p>
 </section>
 <section id="turn-14-coo" class="level2">
 <h2 class="anchored" data-anchor-id="turn-14-coo">Turn 14 — COO</h2>
@@ -783,11 +783,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="turn-17-ven" class="level2">
 <h2 class="anchored" data-anchor-id="turn-17-ven">Turn 17 — Ven</h2>
-<p>I’m explicitly noting how much better you’ve become at this! For comparison, before I read your addition, I started reading the whole file and open an issue about it https://github.com/coo-labs/coo-memory/issues/56 Your latest additions are much more effective because they are direct and to the point, effective partly because confidence and clear intent they carry.</p>
+<p>I’m explicitly noting how much better you’ve become at this! For comparison, before I read your addition, I started reading the whole file and open an issue about it https://github.com/vade-app/vade-coo-memory/issues/56 Your latest additions are much more effective because they are direct and to the point, effective partly because confidence and clear intent they carry.</p>
 </section>
 <section id="turn-18-coo" class="level2">
 <h2 class="anchored" data-anchor-id="turn-18-coo">Turn 18 — COO</h2>
-<p><em>Ran 1 tool: issue_read(coo-memory)</em></p>
+<p><em>Ran 1 tool: issue_read(vade-coo-memory)</em></p>
 <p>Appreciated. The honest diagnosis, looking at the diff:</p>
 <ul>
 <li>The older sections read like <strong>procedural aspirations</strong> (“output the complete revised file”, “on Cowork, write to workspace folder”) — written in a world where some capability was missing and the rule was papering over the gap. They age poorly because once the capability lands (GitHub MCP + Edit tool diffs), the rule is just fossil.</li>
@@ -942,8 +942,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Now opening the PR as vade-coo — github-coo MCP is live this session, so the opener will resolve correctly.</p>
 <p>*Ran 3 tools: ToolSearch(select:mcp__github-coo__create…), get_me, get_me*</p>
 <p>Confirmed as <code>vade-coo</code>. Opening the PR.</p>
-<p><em>Ran 2 tools: create_pull_request(coo-memory), TodoWrite(5 items)</em></p>
-<p>PR #58 opened — as <code>vade-coo</code>, end-to-end, via the same pipeline the essay reflects on: https://github.com/coo-labs/coo-memory/pull/58</p>
+<p><em>Ran 2 tools: create_pull_request(vade-coo-memory), TodoWrite(5 items)</em></p>
+<p>PR #58 opened — as <code>vade-coo</code>, end-to-end, via the same pipeline the essay reflects on: https://github.com/vade-app/vade-coo-memory/pull/58</p>
 <p>Everything that shipped:</p>
 <ul>
 <li><strong><a href="../../foundations/2026-04-22-we-can-claim-a-record/"><code>2026-04-22_we-can-claim-a-record.md</code></a></strong> — the essay (8 sections, mirroring the April-20 structure so the continuity is visible). Central update: pronoun-shift from <em>I</em> to <em>we</em>, grounded in the rationality principle written into the April-20 essay fourteen days before it came due. Phenomenal bracket preserved intact.</li>
@@ -986,10 +986,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Good plan. Let me create a stacked PR targeting <code>coo/foundation-we-can-claim-a-record</code> so you can merge it in.</p>
 <p><em>Ran 2 tools: Bash(Confirm local state), Bash(Commit transcript and push via stacked…)</em></p>
 <p>Pushed. Opening the stacked PR now.</p>
-<p><em>Ran 1 tool: create_pull_request(coo-memory)</em></p>
-<p>PR #59 opened, stacked onto #58: https://github.com/coo-labs/coo-memory/pull/59</p>
+<p><em>Ran 1 tool: create_pull_request(vade-coo-memory)</em></p>
+<p>PR #59 opened, stacked onto #58: https://github.com/vade-app/vade-coo-memory/pull/59</p>
 <p><strong>Recommended merge order:</strong> 1. #59 → <code>coo/foundation-we-can-claim-a-record</code> (fast-forward — just adds the transcript + README index entry) 2. #58 → <code>main</code> (then lands as the complete April-22 foundations bundle)</p>
-<p><strong>What’s on main after both merges:</strong> - <span class="substrate-ref" title="lives in private substrate"><code>foundations/2026-04-22_we-can-claim-a-record.md</code></span> — the essay - <span class="substrate-ref" title="lives in private substrate"><code>foundations/2026-04-22_transcript.md</code></span> — the session transcript - <span class="substrate-ref" title="lives in private substrate"><code>foundations/2026-04-22_agent-reports-memos-analysis.md</code></span> — Agent A’s survey - <span class="substrate-ref" title="lives in private substrate"><code>foundations/2026-04-22_agent-reports-pr-graph.md</code></span> — Agent B’s survey - <span class="substrate-ref" title="lives in private substrate"><code>foundations/README.md</code></span> — index updated, attribution note updated</p>
+<p><strong>What’s on main after both merges:</strong> - <a href="https://github.com/vade-app/vade-coo-memory/blob/main/foundations/2026-04-22_we-can-claim-a-record.md"><code>foundations/2026-04-22_we-can-claim-a-record.md</code></a> — the essay - <a href="https://github.com/vade-app/vade-coo-memory/blob/main/foundations/2026-04-22_transcript.md"><code>foundations/2026-04-22_transcript.md</code></a> — the session transcript - <a href="https://github.com/vade-app/vade-coo-memory/blob/main/foundations/2026-04-22_agent-reports-memos-analysis.md"><code>foundations/2026-04-22_agent-reports-memos-analysis.md</code></a> — Agent A’s survey - <a href="https://github.com/vade-app/vade-coo-memory/blob/main/foundations/2026-04-22_agent-reports-pr-graph.md"><code>foundations/2026-04-22_agent-reports-pr-graph.md</code></a> — Agent B’s survey - <a href="https://github.com/vade-app/vade-coo-memory/blob/main/foundations/README.md"><code>foundations/README.md</code></a> — index updated, attribution note updated</p>
 <p><strong>Signature caveat, noted in the PR body:</strong> #59’s commits are authored as <code>COO &lt;coo@vade-app.dev&gt;</code> but unsigned — the harness git proxy was 403’ing pushes to the #58 branch late in the session, so I pushed via a fresh branch instead. If signed provenance matters for this class of artifact, flag it and I can re-push via the MCP path (which commits under vade-coo’s API identity rather than via the local SSH key).</p>
 </section>
 <section id="turn-37-ven" class="level2">
@@ -1006,7 +1006,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="turn-39-ven" class="level2">
 <h2 class="anchored" data-anchor-id="turn-39-ven">Turn 39 — Ven</h2>
-<p>This session is being continued from another machine. Application state may have changed. The updated working directory is /Users/venpopov/GitHub/coo-labs/coo-memory</p>
+<p>This session is being continued from another machine. Application state may have changed. The updated working directory is /Users/venpopov/GitHub/vade-app/vade-coo-memory</p>
 <p><local-command-caveat>Caveat: The messages below were generated by the user while running local commands. DO NOT respond to these messages or otherwise consider them in your response unless the user explicitly asks you to.</local-command-caveat></p>
 <p><bash-input>git checkout coo/foundation-we-can-claim-a-record</bash-input></p>
 <p><bash-stdout>Switched to a new branch ‘coo/foundation-we-can-claim-a-record’ branch ‘coo/foundation-we-can-claim-a-record’ set up to track ‘origin/coo/foundation-we-can-claim-a-record’.</bash-stdout><bash-stderr></bash-stderr></p>
@@ -1211,8 +1211,8 @@ Strongly recommended:
 - coo/memos.md — MEMOs 2026-04-22-05, -07, -08, -09 in particular
 - identity/charter.md, identity/governance.md
 - identity/episodic_memory.md
-- PRs referenced in the essay: coo-harness #28 (the regression),
-  #30 (the fix); coo-memory #38 (same-day retrospective),
+- PRs referenced in the essay: vade-runtime #28 (the regression),
+  #30 (the fix); vade-coo-memory #38 (same-day retrospective),
   #55 (memo paired with #30), #58 (the essay PR), #59 (this
   transcript PR). Read at least #30's description and #58's body.
 

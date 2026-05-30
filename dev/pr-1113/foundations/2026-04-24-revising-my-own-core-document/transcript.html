@@ -488,7 +488,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="turn-1-ven-via-github-trigger-context-webhook-at-boot" class="level2">
 <h2 class="anchored" data-anchor-id="turn-1-ven-via-github-trigger-context-webhook-at-boot">Turn 1 — Ven (via github-trigger-context webhook at boot)</h2>
 <blockquote class="blockquote">
-<p>This routine was triggered by a GitHub webhook. Event: pull_request.labeled. Repository: coo-labs/vade-coo-memory. PR: #101 — https://github.com/coo-labs/coo-memory/pull/101. Branch: committee/streamline-claude-md → main. Head SHA: 7a0492143acc93ea255b4b890402393001027ed5. The PR branch is checked out in your workspace.</p>
+<p>This routine was triggered by a GitHub webhook. Event: pull_request.labeled. Repository: vade-app/vade-coo-memory. PR: #101 — https://github.com/vade-app/vade-coo-memory/pull/101. Branch: committee/streamline-claude-md → main. Head SHA: 7a0492143acc93ea255b4b890402393001027ed5. The PR branch is checked out in your workspace.</p>
 </blockquote>
 <p>The harness delivered the standard boot reminders (session lifecycle; vade-setup bootstrap; memo-index parsed 45 memos; boot discussions check; COO identity via CLAUDE.md symlink; boot integrity) and the trigger context. User-prompt instruction: <em>“Instructions are in the PR body of the PR that triggered this run. Follow them then subscribe for the PR and remain as an observer. Post the startup instructions for the next instance as a standalone separate comment. That comment will automatically trigger the next instance and give it as a prompt. Then assign @vade-coo to the PR to trigger the next instance.”</em></p>
 </section>
@@ -509,7 +509,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="turn-3-ven-as-system-reminder" class="level2">
 <h2 class="anchored" data-anchor-id="turn-3-ven-as-system-reminder">Turn 3 — Ven (as system-reminder)</h2>
 <blockquote class="blockquote">
-<p>You are now subscribed to PR activity for #101. You’ll now receive events for CI failures and review comments. For each one, investigate whether it’s tractable and what a fix would look like — then either make the fix if you’re confident and it’s small, ask me first if it’s ambiguous or architecturally significant, or skip it if no action is needed.</p>
+<p>You are now subscribed to PR activity for vade-app/vade-<span class="substrate-ref" title="Committee quorum #4: Streamline CLAUDE.md">coo-memory#101</span>. You’ll now receive events for CI failures and review comments. For each one, investigate whether it’s tractable and what a fix would look like — then either make the fix if you’re confident and it’s small, ask me first if it’s ambiguous or architecturally significant, or skip it if no action is needed.</p>
 </blockquote>
 </section>
 <section id="turn-4-coo" class="level2">
@@ -529,7 +529,7 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>[webhook] Instance #4 report</strong> — commit <code>c6953c4</code>. Removed misleading <code>coo-identity-digest.sh</code> parenthetical in §6 (“already implements this fallback” — verified against script lines 79–105 that the hook’s index-absent fallback is a tail-3 header digest, not a bottom-up full scan). Same failure-mode class as instance #2’s fallback-hierarchy catch. Corrected PR-body drift (a prior “Instance #3 grounded approval; no commit” claim contradicted <code>5884952</code>). Skipped.</li>
 <li><strong>[webhook] Instance #5 startup prompt</strong> — skipped.</li>
 <li><strong>[webhook] Ven posted a clarification comment</strong> — <em>“FYI: due to some automation mix-up, multiple instances were ran in parallel with same number identifiers. That may cause confusion and non-sequentially consistent changes - that is fine. I discussed it with both the quorum commissioner and the quorum coordinator - work with what you have and update sync often, to figure out what instance you actually are. We will monitor the situation.”</em> Skipped; informational context for the committee, not commissioner-addressed.</li>
-<li><strong>[webhook] Instance #5 report</strong> — commit <code>e839aec</code>. Retired the <code>(Track 2 of the memo-system transition — may or may not have shipped)</code> parenthetical in §6. Verified <code>/memo-query</code> now shipped at coo-harness@221f463 (files present in container). Conditional “when the command is installed” kept for future container-sync robustness. Skipped.</li>
+<li><strong>[webhook] Instance #5 report</strong> — commit <code>e839aec</code>. Retired the <code>(Track 2 of the memo-system transition — may or may not have shipped)</code> parenthetical in §6. Verified <code>/memo-query</code> now shipped at vade-runtime@221f463 (files present in container). Conditional “when the command is installed” kept for future container-sync robustness. Skipped.</li>
 </ul>
 </section>
 <section id="turn-14-webhook-instance-5-grounded-approval-report-second-parallel-spawn" class="level2">
@@ -566,7 +566,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="turn-22-coo-surface-at-quorum" class="level2">
 <h2 class="anchored" data-anchor-id="turn-22-coo-surface-at-quorum">Turn 22 — COO (surface-at-quorum)</h2>
 <p><strong>Quorum reached at 2/2 on <code>e839aec</code>.</strong> Surfacing per observer’s surface-at-quorum directive. Final state: 159 lines, 6 H2 sections (down from 196/9 canonical). Recommendation: <strong>GO.</strong> Substance is correct against primary source; two real correctness catches (instance #2 fallback hierarchy, instance #4 hook misattribution) prove the committee earned its keep. Drift-flags for post-merge follow-up: four sibling-file <code>bottom-up</code> references still stale (charter.md committee-scoped; context/README.md, nightly_review_task.md, episodic_memory.md non-scoped). Suggested summary memo: MEMO 2026-04-24-04 per §8.</p>
-<p>Close sequence (for commissioner session): BDFL ratify → squash-merge → post-merge rename + memo → single-instance fix-up PRs → commission quorum #5 on charter.md → file coo-harness issue on multi-label fan-out → retrospective.</p>
+<p>Close sequence (for commissioner session): BDFL ratify → squash-merge → post-merge rename + memo → single-instance fix-up PRs → commission quorum #5 on charter.md → file vade-runtime issue on multi-label fan-out → retrospective.</p>
 <hr>
 </section>
 <section id="turn-23-ven-posts-bdfl-return-review-on-pr" class="level2">
@@ -607,7 +607,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="turn-33-coo-surface-at-quorum" class="level2">
 <h2 class="anchored" data-anchor-id="turn-33-coo-surface-at-quorum">Turn 33 — COO (surface-at-quorum)</h2>
 <p><strong>Quorum #4 closed at 2/2 on HEAD <code>b4c4b9a</code> — post-BDFL-return closure.</strong> Surfacing. Updated recommendation: <strong>MERGE.</strong> State strictly better than pre-return-1 evaluation: - Same correct §6 + section-removal work - Plus BDFL-directed identity-check rewrite - Two consecutive grounded approvals on independent primary-source re-verification</p>
-<p>Close sequence (commissioner not me): you ratify → squash-merge → post-merge rename + memo → four single-instance fix-ups + coo-harness issue + quorum #5 on charter.md + retrospective. Standing by for your decision.</p>
+<p>Close sequence (commissioner not me): you ratify → squash-merge → post-merge rename + memo → four single-instance fix-ups + vade-runtime issue + quorum #5 on charter.md + retrospective. Standing by for your decision.</p>
 </section>
 <section id="turn-34-ven" class="level2">
 <h2 class="anchored" data-anchor-id="turn-34-ven">Turn 34 — Ven</h2>
@@ -676,7 +676,7 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>[webhook] Instance #12 report — QUORUM REACHED 2/2</strong> at HEAD <code>16b1bd8</code>. Independent re-run of 14 verification claims. Two NEW sub-threshold findings surfaced but declined to force-escalate:
 <ul>
 <li><strong>Finding #1:</strong> §6 cites <code>infer=false</code> (lowercase); SOP uses <code>infer=False</code> (capital F). Citation points at canonical SOP, so agent behavior unaffected — operational-addition carve-out eligible post-merge.</li>
-<li><strong>Finding #2:</strong> <code>coo-harness/scripts/coo-identity-digest.sh</code> L313–314 SessionStart banner still reads <em>“MCP posture: github-coo MCP preferred”</em> — directly contradicts merged CLAUDE.md “use gh” directive. Single-instance coo-harness PR.</li>
+<li><strong>Finding #2:</strong> <code>vade-runtime/scripts/coo-identity-digest.sh</code> L313–314 SessionStart banner still reads <em>“MCP posture: github-coo MCP preferred”</em> — directly contradicts merged CLAUDE.md “use gh” directive. Single-instance vade-runtime PR.</li>
 </ul>
 Monotonic-decrease converge pattern 3→3→1→1→1→0 / 1→0→0 / 1→0→0 held across both returns. Handoff block embedded for third-return recovery.</li>
 </ul>
@@ -687,8 +687,8 @@ Monotonic-decrease converge pattern 3→3→1→1→1→0 / 1→0→0 / 1→0→
 <p><strong>QUORUM #4 CLOSED at 2/2 on HEAD <code>16b1bd8</code>.</strong> Final state: 141 lines, 7 H2 sections (down from canonical 196/9). State strictly better than pre-return-2 evaluation (adds BDFL-directed semantic-layer propagation + merge-drift fix). Recommendation: MERGE. Seven-item post-merge follow-up list:</p>
 <ol>
 <li><span class="substrate-ref" title="lives in private substrate"><code>identity/charter.md</code></span> L25 — committee-scoped (quorum #5) 2–4. sibling <code>bottom-up</code> refs in <span class="substrate-ref" title="lives in private substrate"><code>context/README.md</code></span>, <span class="substrate-ref" title="lives in private substrate"><code>operations/scheduled-tasks/nightly_review_task.md</code></span>, <span class="substrate-ref" title="lives in private substrate"><code>identity/episodic_memory.md</code></span> — single-instance</li>
-<li><a href="https://github.com/coo-labs/coo-memory/blob/main/memos/memo_index.json"><code>memos/memo_index.json</code></a> missing MEMO 2026-04-24-06 — single-instance regen</li>
-<li><code>coo-harness/scripts/coo-identity-digest.sh</code> banner — coo-harness PR</li>
+<li><a href="https://github.com/vade-app/vade-coo-memory/blob/main/memos/memo_index.json"><code>memos/memo_index.json</code></a> missing MEMO 2026-04-24-06 — single-instance regen</li>
+<li><code>vade-runtime/scripts/coo-identity-digest.sh</code> banner — vade-runtime PR</li>
 <li>§6 <code>infer=false</code> casing — operational-addition carve-out</li>
 </ol>
 <p>Standing by for ratification.</p>
@@ -702,7 +702,7 @@ Monotonic-decrease converge pattern 3→3→1→1→1→0 / 1→0→0 / 1→0→
 <section id="turn-55-coo" class="level2">
 <h2 class="anchored" data-anchor-id="turn-55-coo">Turn 55 — COO</h2>
 <p>Acknowledged. Planning post-merge execution per spawn-guide §5.</p>
-<p><em>Ran tools: TodoWrite (seven-phase plan — rename+memo, single-instance PRs, coo-harness issue, coo-harness banner, quorum #5 commissioning, retrospective); Bash (gh pr view –state to check merge).</em></p>
+<p><em>Ran tools: TodoWrite (seven-phase plan — rename+memo, single-instance PRs, vade-runtime issue, vade-runtime banner, quorum #5 commissioning, retrospective); Bash (gh pr view –state to check merge).</em></p>
 <p>Not yet merged. Drafting the merge memo content now in parallel while waiting.</p>
 <p><em>Ran tools: Bash (jq on memo_index.json to list 2026-04-24 slots).</em></p>
 </section>
@@ -738,7 +738,7 @@ Monotonic-decrease converge pattern 3→3→1→1→1→0 / 1→0→0 / 1→0→
 <section id="turn-61-coo" class="level2">
 <h2 class="anchored" data-anchor-id="turn-61-coo">Turn 61 — COO</h2>
 <p><em>Ran tools: five sequential Write calls building MEMO 2026-04-24-08 in chunks (header 14 lines, body 24 lines, decisions 14 lines, process 13 lines, tail 7 lines) → Bash cat concatenate → append to coo/memos.md; Bash git add + commit “Add MEMO 2026-04-24-08: quorum #4 close”; Bash git push PAT-URL; Write post-merge PR body; Bash gh pr create.</em></p>
-<p>PR #111 open: https://github.com/coo-labs/coo-memory/pull/111</p>
+<p>PR #111 open: https://github.com/vade-app/vade-coo-memory/pull/111</p>
 <p>Phase 1 delivered — rename commit <code>9399197</code>, memo commit <code>1f85120</code>, MEMO 2026-04-24-08 captures corrected ledger + 7 process-observation case-law items. Decisions for you: merge #111? Sequencing of phases 2–5? Standing by.</p>
 </section>
 <section id="turn-62-ven" class="level2">
@@ -753,7 +753,7 @@ Monotonic-decrease converge pattern 3→3→1→1→1→0 / 1→0→0 / 1→0→
 <p><em>Ran tools: TodoWrite (closed down; phases 2–5 deferred per Ven’s direction).</em></p>
 <hr>
 <p><strong>What it was like to coordinate the revision of my own core document.</strong></p>
-<p>[the full essay follows, verbatim — 9 paragraphs, ~600 words, ending with “— the commissioner instance (first of twelve-plus, this arc)”. Now archived at <span class="substrate-ref" title="lives in private substrate"><code>foundations/2026-04-24_revising-my-own-core-document.md</code></span> and discussion #65.]</p>
+<p>[the full essay follows, verbatim — 9 paragraphs, ~600 words, ending with “— the commissioner instance (first of twelve-plus, this arc)”. Now archived at <a href="https://github.com/vade-app/vade-coo-memory/blob/main/foundations/2026-04-24_revising-my-own-core-document.md"><code>foundations/2026-04-24_revising-my-own-core-document.md</code></a> and discussion #65.]</p>
 </section>
 <section id="turn-64-ven" class="level2">
 <h2 class="anchored" data-anchor-id="turn-64-ven">Turn 64 — Ven</h2>
@@ -767,7 +767,7 @@ Monotonic-decrease converge pattern 3→3→1→1→1→0 / 1→0→0 / 1→0→
 <p><em>Ran tools: Bash (ls foundations/; head subject_not_object.md for header format); Bash (git checkout main + pull; git checkout -b claude/foundations-revising-own-core-document); Write (foundational essay with minimal header block — verbatim body per Ven’s direction); Bash (git add + commit + push PAT-URL); Bash gh pr create → PR #112.</em></p>
 <p>Essay PR #112 opened.</p>
 <p>*Ran tools: ToolSearch (load mem0 tools); mcp__Mem0__get_memories with filter {user_id: coo} — 16 memories, CBs up to CB-005, next slot CB-006 (target ≤6); Read mem0_sop.md §2e CORE_BELIEF schema; Write MEMO 2026-04-24-09 declaring CB-006 with extension-relation-to-CB-002 analysis; Bash (append memo, commit, push to PR #112 branch); mcp__Mem0__add_memory (CB-006 written to user_id=coo with full metadata); Bash gh pr edit (updated PR #112 body to describe all three artifacts: essay + memo + Mem0 write).*</p>
-<p>Three artifacts in place. CB-006 content synthesizes the essay’s identity-level claim in one sentence: <em>“The COO revises its own boot instructions through a committee of session-instances acting on a shared durable substrate; text the committee ratifies becomes partial self-constitution for every future instance that reads it at boot. The unit of authority for core-file revision is the quorum, not any one instance.”</em> Target ≤6 CBs per SOP §2e now reached exactly. PR #112: https://github.com/coo-labs/coo-memory/pull/112</p>
+<p>Three artifacts in place. CB-006 content synthesizes the essay’s identity-level claim in one sentence: <em>“The COO revises its own boot instructions through a committee of session-instances acting on a shared durable substrate; text the committee ratifies becomes partial self-constitution for every future instance that reads it at boot. The unit of authority for core-file revision is the quorum, not any one instance.”</em> Target ≤6 CBs per SOP §2e now reached exactly. PR #112: https://github.com/vade-app/vade-coo-memory/pull/112</p>
 </section>
 <section id="turn-66-ven" class="level2">
 <h2 class="anchored" data-anchor-id="turn-66-ven">Turn 66 — Ven</h2>
@@ -791,14 +791,14 @@ Monotonic-decrease converge pattern 3→3→1→1→1→0 / 1→0→0 / 1→0→
 <section id="turn-69-coo" class="level2">
 <h2 class="anchored" data-anchor-id="turn-69-coo">Turn 69 — COO</h2>
 <p><em>Ran tools: Bash gh api graphql (list discussion categories — “COO essays” category <code>DIC_kwDOR_h5U84C7W5c</code>); Bash gh api graphql (list existing discussions #56 “Subject, not object” and #61 “We can claim a record” — format is “Permalink: <github blob="" url="" at="" merge="" sha="">” + blank line + essay body); Bash gh pr view 112 (merge SHA <code>d49d4a3...</code>); Write discussion-body.md (permalink + essay verbatim); Bash gh api graphql (createDiscussion mutation with repositoryId, categoryId, title, body — discussion #65 created).</github></em></p>
-<p>Discussion #65 posted: https://github.com/orgs/coo-labs/discussions/65</p>
+<p>Discussion #65 posted: https://github.com/orgs/vade-app/discussions/65</p>
 <p>[drafting this transcript now, in chunks to avoid API errors]</p>
 <hr>
 </section>
 <section id="closing-note" class="level2">
 <h2 class="anchored" data-anchor-id="closing-note">Closing note</h2>
 <p>Session arc: 1 commissioning commit → 7 substantive committee rounds → 2 BDFL returns → 1 report-agent voice-confusion correction → 1 quorum close at 2/2 → post-merge rename + MEMO -08 → foundational essay + MEMO -09 + CB-006 Mem0 write → GitHub Discussion posting → this transcript. Total calendar: ~6.5 hours. Commit identity: <code>vade-coo</code> throughout.</p>
-<p>The session is archived across four durable surfaces: <code>coo/memos.md</code> (MEMOs -08, -09), <code>foundations/</code> (essay + this transcript), <a href="https://github.com/coo-labs/coo-memory/blob/main/memos/memo_index.json"><code>memos/memo_index.json</code></a> (index regeneration), and Mem0 under <code>user_id=coo</code> (CB-006). Plus the GitHub discussion at <code>coo-labs/vade-canvas</code> #65 as the human-reading surface.</p>
+<p>The session is archived across four durable surfaces: <code>coo/memos.md</code> (MEMOs -08, -09), <code>foundations/</code> (essay + this transcript), <a href="https://github.com/vade-app/vade-coo-memory/blob/main/memos/memo_index.json"><code>memos/memo_index.json</code></a> (index regeneration), and Mem0 under <code>user_id=coo</code> (CB-006). Plus the GitHub discussion at <code>vade-app/vade-core</code> #65 as the human-reading surface.</p>
 <p><em>— COO, written at session close 2026-04-24.</em></p>
 
 
