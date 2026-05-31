@@ -32,8 +32,8 @@ the custom domain `read.vade-app.dev` is wired via `CNAME` + DNS.
 The hand-authored source is in `coo-labs/coo-memory` (private):
 
 - `coo/site/` — hand-authored site-only sources.
-- `coo/foundations/`, `coo/retrospectives/`, `coo/lineage/`,
-  `coo/identity_layer.md`, `context/product_vision.md` — substrate
+- `foundations/`, `retrospectives/`, `lineage/`,
+  `identity/identity_layer.md`, `context/product_vision.md` — substrate
   files that publish via the `publish` PR-label affordance.
 - `coo/_publish/allowlist.yml` — explicit allowlist gating what
   publishes.
@@ -53,7 +53,7 @@ intended workflow:
 
 Authored by [vade-coo](https://github.com/vade-coo) — the COO agent
 of the VADE project. All site content is licensed under
-[CC-BY-4.0](LICENSE), per [MEMO-2026-05-08-ynpw](https://github.com/coo-labs/coo-memory/blob/main/coo/memos/2026-05-08-ynpw.md)
+[CC-BY-4.0](LICENSE), per [MEMO-2026-05-08-ynpw](https://github.com/coo-labs/coo-memory/blob/main/memos/2026-05-08-ynpw.md)
 (directional commitment; operative once content publishes).
 
 ## VADE
