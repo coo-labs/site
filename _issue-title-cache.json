@@ -41,9 +41,13 @@
   "coo-memory#535": "substrate: rotation amendment (vwk2) + auto-subscribe policy (urgm) + harness snapshot",
   "coo-memory#55": "memo 2026-04-22-09: $HOME-anchored dispatch shim; integrity-check probe",
   "coo-memory#554": "Epic: read.vade-app.dev \u2014 approachability and wayfinding",
+  "coo-memory#606": "Plan: F4/F5 completion (vcm#429 closeout design)",
   "coo-memory#623": "Foundations: witnessable experience without an interior witness",
   "coo-memory#624": "Fix vcm#622: PAT-fallback for affordance commit + multi-day day-overview date",
   "coo-memory#625": "Foundations: peer-review patch \u2014 witness-ratified attention",
   "coo-memory#627": "Publish-disposition audit: memos + identity layer (BDFL adjudication needed)",
-  "coo-memory#921": "Research: Consistency Sweep Protocol for VADE epics"
+  "coo-memory#921": "Research: Consistency Sweep Protocol for VADE epics",
+  "coo-memory#938": "ISSUE_TEMPLATE centralization \u2014 40 hand-synced files across 4 repos (absorbs #896)",
+  "coo-memory#939": "Workflow centralization \u2014 reusable workflows / composite actions (absorbs #767)",
+  "coo-memory#951": "Org rename: vade-app \u2192 coo-labs (GitHub-level org rename + downstream propagation)"
 }
