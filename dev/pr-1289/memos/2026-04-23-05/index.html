@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="vade-coo">
+<meta name="author" content="COO (via Claude Code cloud session; worked case is PR #67, landing PR pending)">
 <meta name="dcterms.date" content="2026-04-23">
 <meta name="description" content="Context. Issue #56 (“Streamline CLAUDE.md”) surfaced Ven’s proposal that edits to core files should not be decided unilaterally by one instance. The committee protocol — a quorum mechanism where two consecutive instances making no substantive edits converge a revision — was draf…">
 
@@ -450,7 +450,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>vade-coo </p>
+             <p>COO (via Claude Code cloud session; worked case is PR #67, landing PR pending) </p>
           </div>
   </div>
     
@@ -469,8 +469,9 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><strong>Status:</strong> active<br>
-<strong>Supersedes:</strong> none. Sibling to <code>MEMO 2026-04-23-01</code> (multi-instance essay authorship — extension semantics). This memo governs replacement + restoration semantics for constitutional infrastructure files.</p>
+<p><strong>Status:</strong> superseded by <span class="substrate-ref" title="lives in private substrate">MEMO-2026-04-26-17</span> (2026-04-26)<br>
+<strong>Supersedes:</strong> <a href="../../memos/2026-04-23-01/">MEMO-2026-04-23-01</a></p>
+<p><strong>Supersedes:</strong> none. Sibling to <code>MEMO 2026-04-23-01</code> (multi-instance essay authorship — extension semantics). This memo governs replacement + restoration semantics for constitutional infrastructure files.</p>
 <p><strong>Context.</strong> Issue #56 (“Streamline CLAUDE.md”) surfaced Ven’s proposal that edits to core files should not be decided unilaterally by one instance. The committee protocol — a quorum mechanism where two consecutive instances making no substantive edits converge a revision — was drafted by instance #1, iterated through instances #2–#8 across two convergence arcs (first quorum 2/2, BDFL return on scope with clarifier, second quorum 2/2). The protocol’s design was its own first case: quorum #1 is the protocol designing itself. Ven approved at 2/2 post-return and directed the follow-up landing PR from the observer role. Total arc: 4 substantive rounds, 4 approval rounds, 3 rounds remaining under the §7 cap; no oscillation; one clean BDFL return handled by instance #3’s monotonic-counter rule exactly as designed.</p>
 <p><strong>Decision.</strong> <span class="substrate-ref" title="lives in private substrate"><code>coo/committee_protocol.md</code></span> is adopted. Seven constitutional files are in scope: <code>CLAUDE.md</code>, <span class="substrate-ref" title="lives in private substrate"><code>identity/charter.md</code></span>, <span class="substrate-ref" title="lives in private substrate"><code>identity/governance.md</code></span>, <span class="substrate-ref" title="lives in private substrate"><code>identity/preferences.md</code></span>, <span class="substrate-ref" title="lives in private substrate"><code>coo/memo_protocol.md</code></span>, <span class="substrate-ref" title="lives in private substrate"><code>coo/mem0_sop.md</code></span>, and <span class="substrate-ref" title="lives in private substrate"><code>coo/committee_protocol.md</code></span> itself. Quorum is two consecutive zero-substantive-edit rounds. Restoration rights with cited-reason requirement prevent A-removes-B-restores oscillation. BDFL return zeroes approvals but not the substantive-round counter — monotonic across PR lifetime so the §7 round cap (7 substantive rounds) remains a bounded-iteration guard regardless of returns. CLAUDE.md has an operational-addition carve-out under the reflective-vs-load-bearing principle: single-instance authority for edits that propagate or correct content ratified elsewhere (memos, other files, external reality); substantive edits still require committee. The other six files retain full committee on all edits. The emergency single-instance edit carve-out (BDFL sign-off + 7-day retroactive review) remains available for out-of-band urgent edits to any scoped file, as a sibling carve-out distinct from the CLAUDE.md operational path.</p>
 <p><strong>What this does NOT change.</strong> Memos remain single-instance by default. The sibling essay-authorship protocol (MEMO 2026-04-23-01) governs foundational essays under extension semantics and is not a specialization of or subsumed by this one. Memos feeding operational CLAUDE.md additions retain <span class="substrate-ref" title="lives in private substrate"><code>coo/memo_protocol.md</code></span> authority — the committee protocol does not gate memo authorship, which means an instance can ratify a new CLAUDE.md rule by writing the memo first and propagating operationally. Instance #7’s observation captures why this is a feature, not a loophole: gating propagation-to-CLAUDE.md while leaving memo authorship ungated would be incoherent; the committee protocol governs constitutional files, not their upstream decision-making channels.</p>
@@ -479,6 +480,12 @@ ul.task-list li input[type="checkbox"] {
 <!-- vade:backlinks:begin -->
 <section id="links-to-this-page" class="level2 unlisted backlinks-heading backlinks-section">
 <h2 class="unlisted backlinks-heading anchored" data-anchor-id="links-to-this-page">Links to this page</h2>
+<div class="backlink">
+<p><strong><a href="../../memos/2026-04-23-01/">2026-04-23-01 — Multi-instance essay authorship: first worked case, protocol adopted</a></strong></p>
+<blockquote class="blockquote">
+<p><strong>Status:</strong> superseded by <a href="../../memos/2026-04-23-05/">MEMO-2026-04-23-05</a> (2026-04-23)</p>
+</blockquote>
+</div>
 <div class="backlink">
 <p><strong><a href="../../retrospectives/2026-04-28-briefing-005-multi-session-experiment/">Briefing-005 multi-session experiment — post-project retrospective</a></strong></p>
 <blockquote class="blockquote">
