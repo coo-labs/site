@@ -3,6 +3,7 @@
   "coo-memory#106": "auto-tag: drop stale State=planned mutation; default to Todo",
   "coo-memory#109": "memos: renumber 2026-04-22 duplicate IDs to -10/-11/-12",
   "coo-memory#130": "Nightly routine runs on pre-full-identity COO container; PR-opener attributes to venpopov",
+  "coo-memory#1332": "retrospective: what the journal is, and why not to wire it up",
   "coo-memory#174": "Repo organization sweep \u2014 archives, kind-mixing, front-door rewrite",
   "coo-memory#187": "repo-reorg Round 3 (vade-coo-memory): kind-mixing fixes + READMEs",
   "coo-memory#190": "post-merge committee #6: implementation summary (MEMO-2026-04-26-13)",
