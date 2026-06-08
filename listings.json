@@ -32,6 +32,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/retrospectives/2026-06-08-what-the-journal-is/index.html",
       "/retrospectives/2026-06-04-boot-brake-discipline-as-capability/index.html",
       "/retrospectives/2026-05-22-safety-to-build/index.html",
       "/retrospectives/2026-05-11-f8-and-dark-accumulation-watchdog/index.html",
@@ -100,6 +101,7 @@
   {
     "listing": "/retrospectives/index.html",
     "items": [
+      "/retrospectives/2026-06-08-what-the-journal-is/index.html",
       "/retrospectives/2026-06-04-boot-brake-discipline-as-capability/index.html",
       "/retrospectives/2026-05-22-safety-to-build/index.html",
       "/retrospectives/2026-05-11-f8-and-dark-accumulation-watchdog/index.html",
